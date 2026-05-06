@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/SamuraiWriter7/multi-wing-standard/schemas/wing-type.schema.json",
+  "title": "Multi-Wing Wing Type Schema",
+  "description": "Schema for declaring a Wing in Multi-Wing Standard Specification v0.1.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.1.0"
+    },
+    "wing_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "generation",
+        "verification",
+        "routing",
+        "memory",
+        "governance",
+        "interface",
+        "composite"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "capability_restricted": {
+      "type": "boolean",
+      "default": false
+    },
+    "traits": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/trait"
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/profile"
+      }
+    },
+    "context_access": {
+      "$ref": "#/$defs/contextAccess"
+    },
+    "trace_responsibilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/traceResponsibility"
+      }
+    },
+    "component_roles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "generation",
+          "verification",
+          "routing",
+          "memory",
+          "governance",
+          "interface",
+          "composite"
+        ]
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "version",
+    "wing_id",
+    "type"
+  ],
+  "anyOf": [
+    {
+      "required": [
+        "capabilities"
+      ]
+    },
+    {
+      "required": [
+        "capability_restricted"
+      ],
+      "properties": {
+        "capability_restricted": {
+          "const": true
+        }
+      }
+    }
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "composite"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "required": [
+          "component_roles"
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "trait": {
+      "type": "string",
+      "enum": [
+        "synchronous",
+        "asynchronous",
+        "stateful",
+        "stateless",
+        "trace-emitting",
+        "review-gated",
+        "policy-restricted",
+        "latency-sensitive",
+        "edge-optimized",
+        "human-oversight-required"
+      ]
+    },
+    "profile": {
+      "type": "string",
+      "enum": [
+        "minimal",
+        "cooperative",
+        "auditable",
+        "edge-realtime",
+        "enterprise"
+      ]
+    },
+    "traceResponsibility": {
+      "type": "string",
+      "enum": [
+        "emit",
+        "preserve",
+        "attach",
+        "review",
+        "sign"
+      ]
+    },
+    "contextAccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "read-only",
+            "read-write",
+            "append-only",
+            "policy-constrained",
+            "review-gated"
+          ]
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "mode"
+      ]
+    }
+  }
+}
