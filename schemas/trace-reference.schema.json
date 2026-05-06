@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/SamuraiWriter7/multi-wing-standard/schemas/trace-reference.schema.json",
+  "title": "Multi-Wing Trace Reference Schema",
+  "description": "Schema for provenance-aware trace references used in Multi-Wing Standard Specification v0.1.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.1.0"
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "relation_type": {
+      "type": "string",
+      "enum": [
+        "source",
+        "contribution",
+        "revision",
+        "transformation",
+        "review",
+        "policy",
+        "other"
+      ]
+    },
+    "source_ref": {
+      "$ref": "#/$defs/referenceObject"
+    },
+    "contributor_ref": {
+      "$ref": "#/$defs/referenceObject"
+    },
+    "artifact_ref": {
+      "$ref": "#/$defs/referenceObject"
+    },
+    "transformation_ref": {
+      "$ref": "#/$defs/referenceObject"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "signed": {
+      "type": "boolean",
+      "default": false
+    },
+    "signature": {
+      "$ref": "#/$defs/signatureObject"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "version",
+    "trace_id",
+    "relation_type"
+  ],
+  "anyOf": [
+    {
+      "required": [
+        "source_ref"
+      ]
+    },
+    {
+      "required": [
+        "contributor_ref"
+      ]
+    },
+    {
+      "required": [
+        "artifact_ref"
+      ]
+    },
+    {
+      "required": [
+        "transformation_ref"
+      ]
+    }
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "signed": {
+            "const": true
+          }
+        },
+        "required": [
+          "signed"
+        ]
+      },
+      "then": {
+        "required": [
+          "signature"
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "referenceObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uri": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "signatureObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "signature_value": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "algorithm",
+        "signature_value"
+      ]
+    }
+  }
+}
