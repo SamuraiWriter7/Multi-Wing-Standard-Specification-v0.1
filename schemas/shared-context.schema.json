@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/SamuraiWriter7/multi-wing-standard/schemas/shared-context.schema.json",
+  "title": "Multi-Wing Shared Context Schema",
+  "description": "Schema for shared context objects used in Multi-Wing Standard Specification v0.1.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.1.0"
+    },
+    "context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "coordination_state": {
+      "type": "string",
+      "enum": [
+        "discovered",
+        "advertised",
+        "proposed",
+        "assigned",
+        "executing",
+        "in-review",
+        "revision-requested",
+        "finalized",
+        "escalated",
+        "failed"
+      ]
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifactRef"
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/labeledValue"
+      }
+    },
+    "policies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/labeledValue"
+      }
+    },
+    "trace_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/traceRefLite"
+      }
+    },
+    "freshness_state": {
+      "type": "string",
+      "enum": [
+        "fresh",
+        "stale",
+        "unknown"
+      ]
+    },
+    "conflict_state": {
+      "type": "string",
+      "enum": [
+        "none",
+        "pending-review",
+        "merged",
+        "escalated",
+        "conflicted"
+      ]
+    },
+    "access_policy": {
+      "$ref": "#/$defs/accessPolicy"
+    },
+    "update_metadata": {
+      "$ref": "#/$defs/updateMetadata"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "version",
+    "context_id",
+    "task_id",
+    "coordination_state",
+    "update_metadata"
+  ],
+  "$defs": {
+    "artifactRef": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact_type": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uri": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "artifact_id"
+          ]
+        }
+      ]
+    },
+    "labeledValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value": {}
+          },
+          "required": [
+            "label"
+          ]
+        }
+      ]
+    },
+    "traceRefLite": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "trace_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "relation_type": {
+              "type": "string",
+              "enum": [
+                "source",
+                "contribution",
+                "revision",
+                "transformation",
+                "review",
+                "policy",
+                "other"
+              ]
+            }
+          },
+          "required": [
+            "trace_id"
+          ]
+        }
+      ]
+    },
+    "accessPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "read-only",
+            "read-write",
+            "append-only",
+            "policy-constrained",
+            "review-gated"
+          ]
+        },
+        "allowed_wing_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "mode"
+      ]
+    },
+    "updateMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "last_updated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "last_updated",
+        "revision"
+      ]
+    }
+  }
+}
