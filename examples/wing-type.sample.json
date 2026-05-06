@@ -1,0 +1,42 @@
+{
+  "version": "v0.1.0",
+  "wing_id": "wing-gen-01",
+  "type": "generation",
+  "description": "Generation Wing for candidate draft synthesis.",
+  "capabilities": [
+    "draft",
+    "synthesize",
+    "propose"
+  ],
+  "traits": [
+    "asynchronous",
+    "stateful",
+    "trace-emitting"
+  ],
+  "profiles": [
+    "minimal",
+    "cooperative",
+    "auditable"
+  ],
+  "context_access": {
+    "mode": "read-write",
+    "scopes": [
+      "task-state",
+      "artifact-drafts",
+      "trace-references"
+    ]
+  },
+  "trace_responsibilities": [
+    "emit",
+    "attach",
+    "preserve"
+  ],
+  "constraints": [
+    "Outputs are provisional until reviewed.",
+    "Must preserve trace references when source material is provided."
+  ],
+  "metadata": {
+    "label": "Primary Draft Wing",
+    "owner": "multi-wing-demo"
+  }
+}
