@@ -149,10 +149,10 @@ multi-wing-standard/
 │  ├─ shared-context.schema.json
 │  └─ trace-reference.schema.json
 ├─ examples/
-│  ├─ minimal-session.sample.json
-│  ├─ review-loop.sample.json
-│  ├─ trace-integrated.sample.json
-│  └─ edge-execution.sample.json
+│  ├─ wing-type.sample.json
+│  ├─ message-envelope.sample.json
+│  ├─ shared-context.sample.json
+│  └─ trace-reference.sample.json
 └─ .github/
    ├─ workflows/
    │  └─ validate-specs.yml
@@ -407,7 +407,7 @@ from jsonschema import validate
 with open("schemas/message-envelope.schema.json", "r", encoding="utf-8") as f:
     schema = json.load(f)
 
-with open("examples/minimal-session.sample.json", "r", encoding="utf-8") as f:
+with open("examples/message-envelope.sample.json", "r", encoding="utf-8") as f:
     sample = json.load(f)
 
 validate(instance=sample, schema=schema)
@@ -463,9 +463,19 @@ Articles, essays, and explanatory materials may exist elsewhere, but this reposi
 
 Contributions are welcome.
 
+This repository is a specification repository, so contributions should prioritize:
+
+- clarity
+- consistency
+- interoperability
+- testability
+- extensibility
+- accountability
+
 Suggested contribution areas include:
 
 - terminology refinement
+- specification clarifications
 - schema improvements
 - example workflows
 - interoperability mappings
@@ -475,23 +485,66 @@ Suggested contribution areas include:
 
 Please read `CONTRIBUTING.md` before opening a pull request.
 
-For substantial changes, open an issue first to discuss the proposal.
+For small editorial or schema-alignment fixes, a focused pull request is usually appropriate.  
+For substantial changes to terminology, lifecycle behavior, core Wing types, schema expectations, profile boundaries, or conformance language, open an issue first so the proposal can be discussed before implementation work begins.
+
+When opening a pull request, please describe:
+
+- what changed
+- why it changed
+- whether the change is normative or informative
+- whether schemas or examples were updated
+- whether conformance implications exist
+
+The goal is not only to improve the text, but to keep the specification structurally coherent as it evolves.
 
 ---
 
 ## Issue Types
 
-You are encouraged to use GitHub Issues for:
+You are encouraged to use GitHub Issues before opening larger changes, especially when the proposal affects the normative structure of the specification.
 
-- specification bugs
-- ambiguity reports
-- schema mismatches
-- interoperability concerns
-- profile proposals
-- extension proposals
-- security concerns
+This repository provides three issue templates:
+
+### 1. Bug report
+Use this for problems such as:
+
+- specification inconsistencies
+- schema validation failures
+- mismatches between schemas and examples
+- ambiguous required field behavior
+- broken references or version mismatches
+
+### 2. Feature request
+Use this for proposals such as:
+
+- new examples
+- new optional traits
+- profile enhancements
+- interoperability improvements
+- documentation expansions
+- non-breaking capability additions
+
+### 3. Specification change
+Use this for substantive changes affecting the standard itself, such as:
+
+- terminology revisions
+- lifecycle changes
+- required message field changes
+- Wing type changes
+- conformance rule changes
+- profile boundary changes
 
 Suggested templates are provided in `.github/ISSUE_TEMPLATE/`.
+
+When possible, include:
+
+- the affected file or section
+- whether the issue is normative or informative
+- whether schemas or examples are impacted
+- whether backward compatibility may be affected
+
+This helps keep discussion precise and makes it easier to review changes at the right architectural level.
 
 ---
 
