@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/SamuraiWriter7/multi-wing-standard/schemas/message-envelope.schema.json",
+  "title": "Multi-Wing Message Envelope Schema",
+  "description": "Schema for structured messages used in Multi-Wing Standard Specification v0.1.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.1.0"
+    },
+    "message_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "message_type": {
+      "type": "string",
+      "enum": [
+        "discover",
+        "advertise",
+        "propose",
+        "assign",
+        "execute",
+        "review",
+        "revise",
+        "finalize",
+        "escalate",
+        "error"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sender_wing_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receiver_wing_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "context_ref": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "context_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "context_id"
+          ]
+        }
+      ]
+    },
+    "trace_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/traceRefLite"
+      }
+    },
+    "review_state": {
+      "type": "string",
+      "enum": [
+        "not-reviewed",
+        "in-review",
+        "accepted",
+        "rejected",
+        "conditional-acceptance",
+        "revision-requested",
+        "escalated"
+      ]
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "critical"
+      ]
+    },
+    "profile_id": {
+      "type": "string",
+      "enum": [
+        "minimal",
+        "cooperative",
+        "auditable",
+        "edge-realtime",
+        "enterprise"
+      ]
+    },
+    "payload": {
+      "description": "Payload may be any valid JSON value.",
+      "type": [
+        "object",
+        "array",
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "null"
+      ]
+    },
+    "error": {
+      "$ref": "#/$defs/errorObject"
+    },
+    "signature": {
+      "$ref": "#/$defs/signatureObject"
+    }
+  },
+  "required": [
+    "version",
+    "message_id",
+    "message_type",
+    "timestamp",
+    "sender_wing_id",
+    "task_id",
+    "payload"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "message_type": {
+            "const": "error"
+          }
+        },
+        "required": [
+          "message_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "error"
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "traceRefLite": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "trace_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "relation_type": {
+              "type": "string",
+              "enum": [
+                "source",
+                "contribution",
+                "revision",
+                "transformation",
+                "review",
+                "policy",
+                "other"
+              ]
+            }
+          },
+          "required": [
+            "trace_id"
+          ]
+        }
+      ]
+    },
+    "errorObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "error_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "validation",
+            "routing",
+            "policy",
+            "trace",
+            "execution",
+            "timeout",
+            "authorization",
+            "unknown"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "related_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "error_id",
+        "category",
+        "description"
+      ]
+    },
+    "signatureObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "minLength": 1
+        },
+        "key_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "signature_value": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "algorithm",
+        "signature_value"
+      ]
+    }
+  }
+}
