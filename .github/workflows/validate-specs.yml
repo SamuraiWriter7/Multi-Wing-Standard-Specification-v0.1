@@ -1,0 +1,112 @@
+name: Validate Specs
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-specs:
+    name: Validate JSON Schemas and Samples
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install jsonschema
+
+      - name: Validate schemas and samples
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from jsonschema import Draft202012Validator
+
+          pairs = [
+              (
+                  "schemas/wing-type.schema.json",
+                  "examples/wing-type.sample.json",
+                  "Wing Type"
+              ),
+              (
+                  "schemas/message-envelope.schema.json",
+                  "examples/message-envelope.sample.json",
+                  "Message Envelope"
+              ),
+              (
+                  "schemas/shared-context.schema.json",
+                  "examples/shared-context.sample.json",
+                  "Shared Context"
+              ),
+              (
+                  "schemas/trace-reference.schema.json",
+                  "examples/trace-reference.sample.json",
+                  "Trace Reference"
+              ),
+          ]
+
+          def load_json(path_str: str):
+              path = Path(path_str)
+              if not path.exists():
+                  raise FileNotFoundError(f"File not found: {path}")
+              try:
+                  with path.open("r", encoding="utf-8") as f:
+                      return json.load(f)
+              except json.JSONDecodeError as e:
+                  raise ValueError(f"Invalid JSON in {path}: {e}") from e
+
+          print("=== Validating Multi-Wing Standard repository ===")
+          print()
+
+          failed = False
+
+          for schema_path, sample_path, label in pairs:
+              print(f"=== Validating {label} ===")
+              print(f"Schema: {schema_path}")
+              print(f"Sample: {sample_path}")
+
+              try:
+                  schema = load_json(schema_path)
+                  sample = load_json(sample_path)
+
+                  Draft202012Validator.check_schema(schema)
+                  validator = Draft202012Validator(schema)
+                  errors = sorted(validator.iter_errors(sample), key=lambda e: list(e.path))
+
+                  if errors:
+                      failed = True
+                      print(f"ERROR: {label} sample is invalid.")
+                      for err in errors:
+                          path = ".".join(str(p) for p in err.path) or "<root>"
+                          print(f"  - Path: {path}")
+                          print(f"    Message: {err.message}")
+                  else:
+                      print(f"OK: {label} sample is valid.")
+
+              except Exception as e:
+                  failed = True
+                  print(f"ERROR: {e}")
+
+              print()
+
+          if failed:
+              print("Validation failed.")
+              raise SystemExit(1)
+
+          print("All schema and sample validations passed.")
+          PY
