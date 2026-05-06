@@ -1,0 +1,28 @@
+{
+  "version": "v0.1.0",
+  "trace_id": "trace-001",
+  "relation_type": "source",
+  "source_ref": {
+    "id": "source-doc-001",
+    "type": "document",
+    "uri": "urn:source:source-doc-001",
+    "label": "Architecture Notes"
+  },
+  "artifact_ref": {
+    "id": "artifact-001",
+    "type": "draft",
+    "uri": "urn:artifact:artifact-001",
+    "label": "Initial Synthesis Draft"
+  },
+  "timestamp": "2026-05-05T11:58:00Z",
+  "source_version": "v1.0",
+  "signed": true,
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_id": "key-gov-01",
+    "signature_value": "base64-example-trace-signature"
+  },
+  "metadata": {
+    "note": "Source trace attached during generation stage."
+  }
+}
