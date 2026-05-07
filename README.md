@@ -62,7 +62,7 @@ This specification is designed to bridge three layers:
 
 Multi-Wing is built around the following design principles:
 
-- **Role differentiation over monolithic intelligence**
+- **role differentiation over monolithic intelligence**
 - **coordination over command**
 - **traceability over opacity**
 - **adaptation over rigidity**
@@ -141,6 +141,9 @@ multi-wing-standard/
 │  ├─ architecture-overview.md
 │  ├─ wing-type-system.md
 │  ├─ kazene-coordination-principles.md
+│  ├─ kazene-operational-semantics.md
+│  ├─ wing-composition-rules.md
+│  ├─ trace-lifecycle-model.md
 │  ├─ interoperability-profiles.md
 │  └─ relationship-to-mcp-a2a.md
 ├─ schemas/
@@ -152,7 +155,11 @@ multi-wing-standard/
 │  ├─ wing-type.sample.json
 │  ├─ message-envelope.sample.json
 │  ├─ shared-context.sample.json
-│  └─ trace-reference.sample.json
+│  ├─ trace-reference.sample.json
+│  └─ scenarios/
+│     ├─ minimal-session.sample.json
+│     ├─ review-loop.sample.json
+│     └─ trace-integrated.sample.json
 └─ .github/
    ├─ workflows/
    │  └─ validate-specs.yml
@@ -161,6 +168,23 @@ multi-wing-standard/
       ├─ feature_request.md
       └─ spec_change.md
 ```
+
+### Key Areas
+
+- `spec/`  
+  Canonical specification text.
+
+- `docs/`  
+  Supporting architectural, operational, and interoperability documents.
+
+- `schemas/`  
+  JSON Schemas for core structural objects.
+
+- `examples/`  
+  Atomic schema-aligned sample objects for Wings, messages, shared context, and trace references.
+
+- `examples/scenarios/`  
+  Informative composite scenarios illustrating end-to-end coordination flows such as minimal sessions, review loops, and trace-integrated workflows.
 
 ---
 
@@ -183,11 +207,26 @@ If you are new to this repository, read in the following order:
 5. `docs/kazene-coordination-principles.md`  
    The coordination philosophy and normative interaction principles.
 
-6. `docs/relationship-to-mcp-a2a.md`  
-   Notes on interoperability and mapping to external protocols.
+6. `docs/kazene-operational-semantics.md`  
+   The operational state model, rebalance conditions, and failure semantics of Kazene.
 
-7. `examples/` and `schemas/`  
-   Reference objects for implementation and validation.
+7. `docs/wing-composition-rules.md`  
+   Recommended, risky, and guarded combinations of Wing roles.
+
+8. `docs/trace-lifecycle-model.md`  
+   Trace obligations across proposal, review, revision, finalization, and escalation.
+
+9. `docs/interoperability-profiles.md`  
+   Profile-based compatibility guidance, including v0.2-oriented extensions.
+
+10. `docs/relationship-to-mcp-a2a.md`  
+    Notes on interoperability and architectural alignment with adjacent protocol ecosystems.
+
+11. `examples/`  
+    Atomic schema-aligned examples for individual structural elements.
+
+12. `examples/scenarios/`  
+    Informative end-to-end coordination scenarios.
 
 ---
 
@@ -368,7 +407,31 @@ Multi-Wing is relevant to systems such as:
 - distributed expert networks
 - auditable knowledge work systems
 
-The examples in `examples/` illustrate how these systems may be expressed in interoperable form.
+The repository includes two kinds of examples:
+
+### Atomic Examples
+Located in `examples/`, these provide schema-aligned sample objects for:
+
+- Wing declarations
+- message envelopes
+- shared context objects
+- trace references
+
+These examples are intended for validation, implementation guidance, and object-level interoperability testing.
+
+### Scenario Examples
+Located in `examples/scenarios/`, these provide informative end-to-end coordination flows such as:
+
+- `minimal-session.sample.json`  
+  A minimal Multi-Wing flow with lightweight coordination and no independent review.
+
+- `review-loop.sample.json`  
+  A cooperative flow in which review changes the path of execution and triggers revision.
+
+- `trace-integrated.sample.json`  
+  An auditable flow with proposal, review, revision, finalization, and trace continuity across the lifecycle.
+
+These scenarios are intended to show how the specification behaves as a coordination system rather than only as a set of isolated objects.
 
 ---
 
@@ -593,6 +656,9 @@ Preferred citation metadata should include:
 - `docs/architecture-overview.md`
 - `docs/wing-type-system.md`
 - `docs/kazene-coordination-principles.md`
+- `docs/kazene-operational-semantics.md`
+- `docs/wing-composition-rules.md`
+- `docs/trace-lifecycle-model.md`
 - `docs/interoperability-profiles.md`
 - `docs/relationship-to-mcp-a2a.md`
 
