@@ -1,0 +1,365 @@
+{
+  "version": "v0.1.0",
+  "scenario_id": "scenario-trace-001",
+  "profile": "auditable",
+  "additional_profiles": [
+    "signed-trace"
+  ],
+  "title": "Trace-Integrated Review and Finalization Flow",
+  "task": {
+    "task_id": "task-201",
+    "label": "Produce a trace-aware synthesis with auditable review history",
+    "status": "finalized"
+  },
+  "wings": [
+    {
+      "wing_id": "wing-mem-01",
+      "type": "memory",
+      "capabilities": [
+        "retrieve",
+        "supply-context"
+      ]
+    },
+    {
+      "wing_id": "wing-gen-01",
+      "type": "generation",
+      "capabilities": [
+        "draft",
+        "synthesize",
+        "revise"
+      ]
+    },
+    {
+      "wing_id": "wing-ver-01",
+      "type": "verification",
+      "capabilities": [
+        "review",
+        "request-revision",
+        "approve"
+      ]
+    },
+    {
+      "wing_id": "wing-gov-01",
+      "type": "governance",
+      "capabilities": [
+        "attach-trace",
+        "preserve-review-chain",
+        "record-finalization-authority",
+        "sign-trace"
+      ]
+    },
+    {
+      "wing_id": "wing-route-01",
+      "type": "routing",
+      "capabilities": [
+        "assign",
+        "rebalance",
+        "finalize"
+      ]
+    }
+  ],
+  "shared_context": {
+    "context_id": "ctx-201",
+    "coordination_state": "finalized",
+    "artifacts": [
+      {
+        "artifact_id": "artifact-201-v1",
+        "artifact_type": "draft"
+      },
+      {
+        "artifact_id": "artifact-201-v2",
+        "artifact_type": "revised-draft"
+      },
+      {
+        "artifact_id": "artifact-201-review-1",
+        "artifact_type": "review-note"
+      },
+      {
+        "artifact_id": "artifact-201-final",
+        "artifact_type": "final-output"
+      }
+    ],
+    "trace_refs": [
+      {
+        "trace_id": "trace-source-001",
+        "relation_type": "source"
+      },
+      {
+        "trace_id": "trace-review-001",
+        "relation_type": "review"
+      },
+      {
+        "trace_id": "trace-revision-001",
+        "relation_type": "revision"
+      },
+      {
+        "trace_id": "trace-finalize-001",
+        "relation_type": "other"
+      }
+    ],
+    "policies": [
+      {
+        "label": "trace-preservation",
+        "value": "mandatory"
+      },
+      {
+        "label": "review-before-finalization",
+        "value": true
+      }
+    ]
+  },
+  "trace_objects": [
+    {
+      "trace_id": "trace-source-001",
+      "relation_type": "source",
+      "source_ref": {
+        "id": "source-doc-201",
+        "type": "document",
+        "uri": "urn:source:source-doc-201",
+        "label": "Retrieved Architecture Notes"
+      },
+      "artifact_ref": {
+        "id": "artifact-201-v1",
+        "type": "draft",
+        "uri": "urn:artifact:artifact-201-v1",
+        "label": "Initial Draft"
+      },
+      "timestamp": "2026-05-05T12:00:00Z",
+      "source_version": "v1.0",
+      "signed": false
+    },
+    {
+      "trace_id": "trace-review-001",
+      "relation_type": "review",
+      "artifact_ref": {
+        "id": "artifact-201-v1",
+        "type": "draft",
+        "uri": "urn:artifact:artifact-201-v1",
+        "label": "Initial Draft"
+      },
+      "contributor_ref": {
+        "id": "wing-ver-01",
+        "type": "wing",
+        "label": "Verification Wing"
+      },
+      "timestamp": "2026-05-05T12:05:00Z",
+      "signed": false,
+      "metadata": {
+        "outcome": "revision-requested",
+        "reason": "Trace continuity and execution-layer implications were incomplete."
+      }
+    },
+    {
+      "trace_id": "trace-revision-001",
+      "relation_type": "revision",
+      "artifact_ref": {
+        "id": "artifact-201-v2",
+        "type": "revised-draft",
+        "uri": "urn:artifact:artifact-201-v2",
+        "label": "Revised Draft"
+      },
+      "transformation_ref": {
+        "id": "artifact-201-v1",
+        "type": "draft",
+        "label": "Initial Draft"
+      },
+      "contributor_ref": {
+        "id": "wing-gen-01",
+        "type": "wing",
+        "label": "Generation Wing"
+      },
+      "timestamp": "2026-05-05T12:08:00Z",
+      "signed": false
+    },
+    {
+      "trace_id": "trace-finalize-001",
+      "relation_type": "other",
+      "artifact_ref": {
+        "id": "artifact-201-final",
+        "type": "final-output",
+        "uri": "urn:artifact:artifact-201-final",
+        "label": "Final Output"
+      },
+      "contributor_ref": {
+        "id": "wing-gov-01",
+        "type": "wing",
+        "label": "Governance Wing"
+      },
+      "timestamp": "2026-05-05T12:12:00Z",
+      "signed": true,
+      "signature": {
+        "algorithm": "Ed25519",
+        "key_id": "key-gov-01",
+        "signature_value": "base64-example-final-signature"
+      },
+      "metadata": {
+        "authority_path": [
+          "wing-route-01",
+          "wing-ver-01",
+          "wing-gov-01"
+        ],
+        "finalization_basis": "accepted-review-and-governance-record"
+      }
+    }
+  ],
+  "messages": [
+    {
+      "message_id": "msg-201",
+      "message_type": "assign",
+      "sender_wing_id": "wing-route-01",
+      "receiver_wing_id": "wing-mem-01",
+      "task_id": "task-201",
+      "payload": {
+        "assignment": "retrieve-relevant-source-material"
+      }
+    },
+    {
+      "message_id": "msg-202",
+      "message_type": "execute",
+      "sender_wing_id": "wing-mem-01",
+      "task_id": "task-201",
+      "payload": {
+        "result": "source-retrieved",
+        "source_ref": "source-doc-201"
+      }
+    },
+    {
+      "message_id": "msg-203",
+      "message_type": "assign",
+      "sender_wing_id": "wing-route-01",
+      "receiver_wing_id": "wing-gen-01",
+      "task_id": "task-201",
+      "payload": {
+        "assignment": "produce-trace-aware-draft"
+      }
+    },
+    {
+      "message_id": "msg-204",
+      "message_type": "propose",
+      "sender_wing_id": "wing-gen-01",
+      "task_id": "task-201",
+      "trace_refs": [
+        {
+          "trace_id": "trace-source-001",
+          "relation_type": "source"
+        }
+      ],
+      "payload": {
+        "artifact_ref": "artifact-201-v1",
+        "proposal_type": "draft-synthesis"
+      }
+    },
+    {
+      "message_id": "msg-205",
+      "message_type": "review",
+      "sender_wing_id": "wing-ver-01",
+      "task_id": "task-201",
+      "trace_refs": [
+        {
+          "trace_id": "trace-review-001",
+          "relation_type": "review"
+        }
+      ],
+      "review_state": "revision-requested",
+      "payload": {
+        "artifact_ref": "artifact-201-v1",
+        "outcome": "revision-requested"
+      }
+    },
+    {
+      "message_id": "msg-206",
+      "message_type": "revise",
+      "sender_wing_id": "wing-gen-01",
+      "task_id": "task-201",
+      "trace_refs": [
+        {
+          "trace_id": "trace-source-001",
+          "relation_type": "source"
+        },
+        {
+          "trace_id": "trace-review-001",
+          "relation_type": "review"
+        },
+        {
+          "trace_id": "trace-revision-001",
+          "relation_type": "revision"
+        }
+      ],
+      "payload": {
+        "prior_artifact_ref": "artifact-201-v1",
+        "new_artifact_ref": "artifact-201-v2"
+      }
+    },
+    {
+      "message_id": "msg-207",
+      "message_type": "review",
+      "sender_wing_id": "wing-ver-01",
+      "task_id": "task-201",
+      "review_state": "accepted",
+      "payload": {
+        "artifact_ref": "artifact-201-v2",
+        "outcome": "accepted"
+      }
+    },
+    {
+      "message_id": "msg-208",
+      "message_type": "finalize",
+      "sender_wing_id": "wing-route-01",
+      "task_id": "task-201",
+      "trace_refs": [
+        {
+          "trace_id": "trace-source-001",
+          "relation_type": "source"
+        },
+        {
+          "trace_id": "trace-review-001",
+          "relation_type": "review"
+        },
+        {
+          "trace_id": "trace-revision-001",
+          "relation_type": "revision"
+        },
+        {
+          "trace_id": "trace-finalize-001",
+          "relation_type": "other"
+        }
+      ],
+      "payload": {
+        "artifact_ref": "artifact-201-final",
+        "basis": "accepted-review"
+      }
+    }
+  ],
+  "review_chain": [
+    {
+      "review_id": "review-201-1",
+      "reviewer": "wing-ver-01",
+      "artifact_ref": "artifact-201-v1",
+      "outcome": "revision-requested",
+      "trace_ref": "trace-review-001"
+    },
+    {
+      "review_id": "review-201-2",
+      "reviewer": "wing-ver-01",
+      "artifact_ref": "artifact-201-v2",
+      "outcome": "accepted"
+    }
+  ],
+  "revision_chain": [
+    {
+      "from": "artifact-201-v1",
+      "to": "artifact-201-v2",
+      "reviser": "wing-gen-01",
+      "trace_ref": "trace-revision-001"
+    }
+  ],
+  "authority_trace": {
+    "finalized_by": "wing-route-01",
+    "governance_recorded_by": "wing-gov-01",
+    "final_trace_ref": "trace-finalize-001"
+  },
+  "notes": [
+    "This scenario illustrates auditable trace continuity across proposal, review, revision, and finalization.",
+    "It is intended as an informative scenario example rather than an atomic schema-validation target."
+  ]
+}
