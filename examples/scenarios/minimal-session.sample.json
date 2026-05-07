@@ -1,0 +1,96 @@
+{
+  "version": "v0.1.0",
+  "scenario_id": "scenario-minimal-001",
+  "profile": "minimal",
+  "title": "Minimal Multi-Wing Session",
+  "task": {
+    "task_id": "task-001",
+    "label": "Draft a short synthesis from provided notes",
+    "status": "finalized"
+  },
+  "wings": [
+    {
+      "wing_id": "wing-int-01",
+      "type": "interface",
+      "capabilities": [
+        "intake",
+        "normalize-request"
+      ]
+    },
+    {
+      "wing_id": "wing-gen-01",
+      "type": "generation",
+      "capabilities": [
+        "draft",
+        "synthesize"
+      ]
+    }
+  ],
+  "shared_context": {
+    "context_id": "ctx-001",
+    "coordination_state": "finalized",
+    "artifacts": [
+      {
+        "artifact_id": "artifact-001",
+        "artifact_type": "draft"
+      }
+    ]
+  },
+  "messages": [
+    {
+      "message_id": "msg-001",
+      "message_type": "discover",
+      "sender_wing_id": "wing-int-01",
+      "task_id": "task-001",
+      "payload": {
+        "intent": "request-draft"
+      }
+    },
+    {
+      "message_id": "msg-002",
+      "message_type": "advertise",
+      "sender_wing_id": "wing-gen-01",
+      "task_id": "task-001",
+      "payload": {
+        "capabilities": [
+          "draft",
+          "synthesize"
+        ]
+      }
+    },
+    {
+      "message_id": "msg-003",
+      "message_type": "assign",
+      "sender_wing_id": "wing-int-01",
+      "receiver_wing_id": "wing-gen-01",
+      "task_id": "task-001",
+      "payload": {
+        "assignment": "produce-initial-draft"
+      }
+    },
+    {
+      "message_id": "msg-004",
+      "message_type": "execute",
+      "sender_wing_id": "wing-gen-01",
+      "task_id": "task-001",
+      "payload": {
+        "artifact_ref": "artifact-001",
+        "result": "initial-draft-created"
+      }
+    },
+    {
+      "message_id": "msg-005",
+      "message_type": "finalize",
+      "sender_wing_id": "wing-int-01",
+      "task_id": "task-001",
+      "payload": {
+        "artifact_ref": "artifact-001",
+        "note": "Finalized under minimal profile without independent review."
+      }
+    }
+  ],
+  "notes": [
+    "This scenario illustrates the smallest useful Multi-Wing flow.",
+    "It is intentionally lightweight and does not include independent review or deep trace continuity."
+  ]
+}
