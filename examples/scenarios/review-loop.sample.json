@@ -1,0 +1,159 @@
+{
+  "version": "v0.1.0",
+  "scenario_id": "scenario-review-001",
+  "profile": "cooperative",
+  "title": "Review Loop with Revision Request",
+  "task": {
+    "task_id": "task-101",
+    "label": "Prepare a concise architecture summary with review",
+    "status": "finalized"
+  },
+  "wings": [
+    {
+      "wing_id": "wing-route-01",
+      "type": "routing",
+      "capabilities": [
+        "assign",
+        "rebalance",
+        "escalate"
+      ]
+    },
+    {
+      "wing_id": "wing-gen-01",
+      "type": "generation",
+      "capabilities": [
+        "draft",
+        "synthesize",
+        "revise"
+      ]
+    },
+    {
+      "wing_id": "wing-ver-01",
+      "type": "verification",
+      "capabilities": [
+        "check-consistency",
+        "request-revision",
+        "approve"
+      ]
+    }
+  ],
+  "shared_context": {
+    "context_id": "ctx-101",
+    "coordination_state": "finalized",
+    "artifacts": [
+      {
+        "artifact_id": "artifact-101-v1",
+        "artifact_type": "draft"
+      },
+      {
+        "artifact_id": "artifact-101-v2",
+        "artifact_type": "revised-draft"
+      },
+      {
+        "artifact_id": "artifact-101-review-1",
+        "artifact_type": "review-note"
+      }
+    ],
+    "policies": [
+      {
+        "label": "review-required",
+        "value": true
+      }
+    ]
+  },
+  "messages": [
+    {
+      "message_id": "msg-101",
+      "message_type": "assign",
+      "sender_wing_id": "wing-route-01",
+      "receiver_wing_id": "wing-gen-01",
+      "task_id": "task-101",
+      "payload": {
+        "assignment": "produce-initial-summary"
+      }
+    },
+    {
+      "message_id": "msg-102",
+      "message_type": "execute",
+      "sender_wing_id": "wing-gen-01",
+      "task_id": "task-101",
+      "payload": {
+        "artifact_ref": "artifact-101-v1",
+        "result": "initial-summary-produced"
+      }
+    },
+    {
+      "message_id": "msg-103",
+      "message_type": "assign",
+      "sender_wing_id": "wing-route-01",
+      "receiver_wing_id": "wing-ver-01",
+      "task_id": "task-101",
+      "payload": {
+        "assignment": "review-initial-summary",
+        "artifact_ref": "artifact-101-v1"
+      }
+    },
+    {
+      "message_id": "msg-104",
+      "message_type": "review",
+      "sender_wing_id": "wing-ver-01",
+      "task_id": "task-101",
+      "review_state": "revision-requested",
+      "payload": {
+        "artifact_ref": "artifact-101-v1",
+        "review_note_ref": "artifact-101-review-1",
+        "outcome": "revision-requested",
+        "reason": "The summary omits the execution-layer implications."
+      }
+    },
+    {
+      "message_id": "msg-105",
+      "message_type": "revise",
+      "sender_wing_id": "wing-route-01",
+      "receiver_wing_id": "wing-gen-01",
+      "task_id": "task-101",
+      "payload": {
+        "prior_artifact_ref": "artifact-101-v1",
+        "target_artifact_ref": "artifact-101-v2",
+        "trigger": "review-request"
+      }
+    },
+    {
+      "message_id": "msg-106",
+      "message_type": "execute",
+      "sender_wing_id": "wing-gen-01",
+      "task_id": "task-101",
+      "payload": {
+        "artifact_ref": "artifact-101-v2",
+        "result": "revised-summary-produced",
+        "revised_from": "artifact-101-v1"
+      }
+    },
+    {
+      "message_id": "msg-107",
+      "message_type": "review",
+      "sender_wing_id": "wing-ver-01",
+      "task_id": "task-101",
+      "review_state": "accepted",
+      "payload": {
+        "artifact_ref": "artifact-101-v2",
+        "outcome": "accepted",
+        "reason": "The revised summary covers structure, protocol, and execution layers."
+      }
+    },
+    {
+      "message_id": "msg-108",
+      "message_type": "finalize",
+      "sender_wing_id": "wing-route-01",
+      "task_id": "task-101",
+      "payload": {
+        "artifact_ref": "artifact-101-v2",
+        "basis": "accepted-review"
+      }
+    }
+  ],
+  "notes": [
+    "This scenario demonstrates review as a path-altering event.",
+    "The revised artifact preserves continuity from the first draft."
+  ]
+}
